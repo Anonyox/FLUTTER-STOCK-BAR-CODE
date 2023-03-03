@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
@@ -30,5 +31,32 @@ class REST {
           // ignore: prefer_interpolation_to_compose_strings
           'bearer ' + sharedPreference.getString('token').toString()
     });
+  }
+
+  static Future ping() async {
+    SharedPreferences sharedPreference = await SharedPreferences.getInstance();
+    var url = Uri.parse(API_PATH + 'auth/ping');
+    return await http.get(url, headers: {
+      HttpHeaders.contentTypeHeader: "application/json",
+      HttpHeaders.acceptHeader: "application/json",
+      HttpHeaders.authorizationHeader:
+          // ignore: prefer_interpolation_to_compose_strings
+          'bearer ' + sharedPreference.getString('token').toString()
+    });
+  }
+
+  static Future post(var route, var body) async {
+    SharedPreferences sharedPreference = await SharedPreferences.getInstance();
+    var url = Uri.parse(API_PATH + route);
+    return await http.post(
+      url,
+      headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+        HttpHeaders.acceptHeader: "application/json",
+        HttpHeaders.authorizationHeader:
+            'bearer ' + sharedPreference.getString('token').toString()
+      },
+      body: json.encode(body),
+    );
   }
 }

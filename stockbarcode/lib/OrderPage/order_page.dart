@@ -11,35 +11,30 @@ import 'package:stockbarcode/Shared/requisition_center.dart';
 
 import 'package:stockbarcode/WelcomePage/welcome_page.dart';
 
+import '../Shared/guardservice.dart';
 import 'order_page_service.dart';
 
 class OrderPageView extends StatefulWidget {
   @override
+  // ignore: library_private_types_in_public_api
   _OrderPageState createState() => _OrderPageState();
 }
 
 class _OrderPageState extends State<OrderPageView> {
   var orders = <Order>[];
+  late TokenService _tokenService;
 
-  // _getOrders() {
-  //   OrderPageService.listOrders().then((response) {
-  //     setState(() {
-  //       print(response.statusCode);
+  @override
+  void initState() {
+    super.initState();
+    _tokenService = TokenService(context);
+  }
 
-  //       if (response.body.isNotEmpty) {
-  //         Iterable orderlist = json.decode(response.body);
-
-  //         orders = orderlist.map((model) => Order.fromJson(model)).toList();
-  //       } else {
-  //         ScaffoldMessenger.of(context).showSnackBar(snackBarOrder);
-  //       }
-  //     });
-  //   });
-  // }
-
-  // _OrderPageState() {
-  //   _getOrders();
-  // }
+  @override
+  void dispose() {
+    _tokenService.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,13 +96,12 @@ class _OrderPageState extends State<OrderPageView> {
                                 .getString('order_Id')
                                 .toString())
                             .then((response) {
-                          
-                         Map<String, dynamic> dados = json.decode(response.body);
-                         print(dados);
-                         print(dados['order_Cod']);
-                           print(dados['id']);
+                          Map<String, dynamic> dados =
+                              json.decode(response.body);
+                          print(dados);
+                          print(dados['order_Cod']);
+                          print(dados['id']);
 
-                         
                           print((response.statusCode));
                           // sharedPreference.setString('order_Cod', response.body.order_Cod);
                           if (response.statusCode == 200) {
@@ -116,8 +110,10 @@ class _OrderPageState extends State<OrderPageView> {
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        OrderPageDetailView(title: "Pedido Nº: " + dados['order_Cod'],)));
+                                    builder: (context) => OrderPageDetailView(
+                                          title: "Pedido Nº: " +
+                                              dados['order_Cod'],
+                                        )));
                           } else if (response.statusCode == 401) {
                             final player = AudioCache();
                             player.play('error.wav');
@@ -131,7 +127,7 @@ class _OrderPageState extends State<OrderPageView> {
                           }
                         });
                       }
-                    }), 
+                    }),
                 Text(
                   "Ler pedido para separar",
                   style: TextStyle(fontSize: 17),
@@ -143,45 +139,6 @@ class _OrderPageState extends State<OrderPageView> {
       ),
     );
   }
-
-  // listOrders() {
-  //   return ListView.builder(
-  //       itemCount: orders.length,
-  //       itemBuilder: (context, index) {
-  //         return ListTile(
-  //           title: Text(
-  //             orders[index].orderType,
-  //           ),
-  //           trailing: Container(
-  //             width: 100,
-  //             child: Row(
-  //               children: [
-  //                 Text(orders[index].order_Cod),
-  //                 // Text(orders[index].id),
-  //               ],
-  //             ),
-  //           ),
-
-  //           // title: Column(
-  //           //   crossAxisAlignment: CrossAxisAlignment.start,
-  //           //   children: [
-  //           //     Row(
-  //           //       mainAxisAlignment: MainAxisAlignment.start,
-  //           //       children: [
-  //           //         Text(orders[index].orderType),
-  //           //       ],
-  //           //     ),
-  //           //     Row(
-  //           //       mainAxisAlignment: MainAxisAlignment.center,
-  //           //       children: [
-  //           //         Text(orders[index].order_Cod),
-  //           //       ],
-  //           //     )
-  //           //   ],
-  //           // ),
-  //         );
-  //       });
-  // }
 
   Future<bool> scanOrder() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();

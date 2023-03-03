@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stockbarcode/OrderPage/order_page.dart';
 
+import '../Shared/guardservice.dart';
 import '../WelcomePage/welcome_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,6 +15,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _counter = 0;
+  late TokenService _tokenService;
 
   void _incrementCounter() {
     setState(() {
@@ -21,8 +23,17 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  
+  @override
+  void initState() {
+    super.initState();
+    _tokenService = TokenService(context);
+  }
 
+  @override
+  void dispose() {
+    _tokenService.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

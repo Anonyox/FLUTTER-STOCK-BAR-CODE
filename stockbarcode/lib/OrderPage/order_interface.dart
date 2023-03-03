@@ -1,18 +1,19 @@
 class Order {
+  String id;
+  DateTime insertionDate;
+  int quantity;
 
-  late String id;
-  late String order_Cod;
-  late String orderType;
+  Order({
+    required this.id,
+    required this.insertionDate,
+    required this.quantity,
+  });
 
-  Order(String id, String order_Cod, String orderType) {
-    this.id = id;
-    this.order_Cod = order_Cod;
-    this.orderType = orderType;
+  factory Order.fromJson(Map<String, dynamic> json) {
+    return Order(
+      id: json['id'],
+      insertionDate: DateTime.parse(json['insercion_Date']),
+      quantity: json['quantity'],
+    );
   }
-
-  Order.fromJson(Map json)
-      : id = json['id'],
-        order_Cod = json['order_Cod'],
-        orderType = json['orderType'];
-  
 }
